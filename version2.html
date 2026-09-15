@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>ПСКОВВТОРМЕТ — сбор, переработка и продажа металлолома</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181B;
+    --steel:#26333B;
+    --steel-2:#324450;
+    --mist:#9CA6A5;
+    --paper:#EEEAE0;
+    --paper-dim:#DFDACC;
+    --rust:#C1440E;
+    --rust-dim:#8F3309;
+    --line: rgba(238,234,224,0.14);
+    --line-dark: rgba(20,24,27,0.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Teko',sans-serif;
+    font-weight:600;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    line-height:1.02;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 32px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--rust);
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--rust);display:inline-block;}
+
+  /* ===== hazard stripe divider ===== */
+  .hazard{
+    height:10px;
+    background:repeating-linear-gradient(135deg,var(--rust) 0 16px,var(--ink) 16px 32px);
+  }
+
+  /* ===== header ===== */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:var(--ink);
+    color:var(--paper);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 32px;max-width:1140px;margin:0 auto;
+  }
+  .logo{
+    font-family:'Teko',sans-serif;font-weight:700;font-size:28px;
+    letter-spacing:0.02em;
+  }
+  .logo span{color:var(--rust);}
+  nav{display:flex;gap:28px;font-size:14px;}
+  nav a{opacity:0.78;transition:opacity .15s;}
+  nav a:hover{opacity:1;}
+  .top-actions{display:flex;align-items:center;gap:18px;font-family:'IBM Plex Mono',monospace;font-size:14px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:11px 22px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;letter-spacing:0.04em;text-transform:uppercase;
+    border:1px solid var(--rust);
+    background:var(--rust);color:var(--paper);
+    cursor:pointer;
+    transition:background .15s,color .15s;
+  }
+  .btn:hover{background:var(--rust-dim);}
+  .btn-ghost{
+    background:transparent;color:var(--paper);border-color:var(--line);
+  }
+  .btn-ghost:hover{border-color:var(--paper);background:transparent;}
+
+  /* ===== hero ===== */
+  .hero{
+    background:var(--steel);
+    color:var(--paper);
+    position:relative;
+    overflow:hidden;
+    padding:96px 0 0;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:0.35;
+    pointer-events:none;
+  }
+  .hero-inner{position:relative;max-width:1140px;margin:0 auto;padding:0 32px 64px;}
+  .hero h1{
+    font-size:clamp(44px,7.4vw,92px);
+    max-width:900px;
+  }
+  .hero h1 em{font-style:normal;color:var(--rust);}
+  .hero p.lede{
+    max-width:600px;margin-top:22px;
+    font-size:18px;color:var(--mist);
+  }
+  .hero-cta{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap;}
+
+  .stat-rail{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--line);
+    position:relative;
+  }
+  .stat{
+    padding:26px 32px;border-right:1px solid var(--line);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .num{font-family:'Teko',sans-serif;font-weight:600;font-size:44px;color:var(--rust);line-height:1;}
+  .stat .lbl{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mist);text-transform:uppercase;letter-spacing:0.06em;margin-top:6px;}
+
+  /* ===== section shell ===== */
+  section{padding:88px 0;}
+  section.on-steel{background:var(--steel);color:var(--paper);}
+  section.on-ink{background:var(--ink);color:var(--paper);}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:48px;flex-wrap:wrap;}
+  .section-head h2{font-size:clamp(34px,4.6vw,54px);}
+  .section-head p{max-width:420px;color:var(--ink);opacity:0.65;font-size:15px;}
+  .on-steel .section-head p, .on-ink .section-head p{color:var(--mist);opacity:1;}
+
+  /* ===== regions ===== */
+  .region-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);}
+  .region-card{background:var(--paper);padding:26px 24px;transition:background .15s;}
+  .region-card:hover{background:var(--paper-dim);}
+  .region-card .n{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--rust);}
+  .region-card h3{font-size:24px;margin-top:8px;letter-spacing:0;text-transform:none;font-family:'IBM Plex Sans',sans-serif;font-weight:600;}
+  .region-card .sub{font-size:13px;color:var(--ink);opacity:0.55;margin-top:4px;}
+
+  /* ===== services ===== */
+  .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .svc-card{
+    border:1px solid var(--line-dark);padding:28px 24px;
+    background:var(--paper);
+  }
+  .on-steel .svc-card{background:var(--steel-2);border-color:var(--line);}
+  .svc-icon{width:34px;height:34px;color:var(--rust);margin-bottom:18px;}
+  .svc-card h3{font-family:'IBM Plex Sans',sans-serif;text-transform:none;font-weight:600;font-size:17px;letter-spacing:0;margin-bottom:8px;}
+  .svc-card p{font-size:14px;opacity:0.75;}
+
+  /* ===== timeline (signature element) ===== */
+  .rail-outer{overflow-x:auto;padding-bottom:12px;margin:0 -32px;padding-left:32px;padding-right:32px;}
+  .rail{
+    display:flex;gap:0;position:relative;min-width:1180px;
+    padding-top:34px;
+  }
+  .rail::before{
+    content:"";position:absolute;top:14px;left:0;right:0;height:6px;
+    background:repeating-linear-gradient(90deg, var(--rust) 0 4px, var(--rust-dim) 4px 8px);
+  }
+  .rail-item{flex:1;position:relative;padding:0 18px 0 0;}
+  .rail-item .rivet{
+    width:14px;height:14px;border-radius:50%;
+    background:var(--paper);border:3px solid var(--rust);
+    position:absolute;top:2px;left:0;
+    box-shadow:0 0 0 4px var(--steel);
+  }
+  .rail-item .yr{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--rust);margin-top:34px;display:block;}
+  .rail-item h4{font-family:'IBM Plex Sans',sans-serif;text-transform:none;font-size:15px;font-weight:600;margin:6px 0 8px;letter-spacing:0;color:var(--paper);}
+  .rail-item p{font-size:13px;color:var(--mist);line-height:1.55;padding-right:14px;}
+
+  /* ===== structure / directory ===== */
+  .dir-lead{
+    border:1px solid var(--line-dark);background:var(--paper-dim);
+    padding:24px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:1px;
+  }
+  .dir-lead .role{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--rust);text-transform:uppercase;letter-spacing:0.06em;}
+  .dir-lead h3{font-family:'IBM Plex Sans',sans-serif;text-transform:none;font-size:22px;font-weight:600;margin-top:4px;letter-spacing:0;}
+  .dir-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);}
+  .dir-cell{background:var(--paper);padding:18px 22px;}
+  .dir-cell .dept{font-size:14px;font-weight:600;}
+  .dir-cell .mail{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--rust-dim);margin-top:6px;word-break:break-all;}
+
+  /* ===== docs list ===== */
+  .doc-list{border-top:1px solid var(--line);}
+  .doc-row{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 0;border-bottom:1px solid var(--line);gap:16px;
+  }
+  .doc-row .name{display:flex;align-items:center;gap:14px;font-size:15px;}
+  .doc-row .name svg{width:18px;height:18px;color:var(--rust);flex-shrink:0;}
+  .doc-row a.dl{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mist);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap;}
+  .doc-row a.dl:hover{color:var(--paper);}
+
+  /* ===== news ===== */
+  .news-grid{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:24px;}
+  .news-card{border:1px solid var(--line-dark);padding:0;background:var(--paper);display:flex;flex-direction:column;}
+  .news-card .thumb{height:150px;background:var(--steel-2);position:relative;overflow:hidden;}
+  .news-card .thumb::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg, rgba(193,68,14,0.5) 0 3px, transparent 3px 22px);}
+  .news-card .body{padding:20px 22px;flex:1;display:flex;flex-direction:column;}
+  .news-card .date{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--rust-dim);}
+  .news-card h4{font-family:'IBM Plex Sans',sans-serif;text-transform:none;font-weight:600;font-size:16px;letter-spacing:0;margin:8px 0 10px;}
+  .news-card p{font-size:13.5px;opacity:0.72;flex:1;}
+  .news-card .rd{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--rust);margin-top:14px;text-transform:uppercase;}
+
+  /* ===== contact ===== */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;}
+  .contact-block .k{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--rust);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;}
+  .contact-block .v{font-size:16px;margin-bottom:22px;}
+  .req-table{width:100%;font-family:'IBM Plex Mono',monospace;font-size:13px;border-collapse:collapse;}
+  .req-table td{padding:8px 0;border-bottom:1px solid var(--line);}
+  .req-table td:first-child{color:var(--mist);}
+  .req-table td:last-child{text-align:right;}
+
+  .lead-form{border:1px solid var(--line);padding:32px;background:var(--steel-2);}
+  .lead-form input{
+    width:100%;padding:13px 14px;margin-bottom:12px;
+    background:var(--ink);border:1px solid var(--line);color:var(--paper);
+    font-family:'IBM Plex Sans',sans-serif;font-size:14px;
+  }
+  .lead-form input::placeholder{color:var(--mist);}
+  .lead-form .fine{font-size:12px;color:var(--mist);margin:14px 0 18px;line-height:1.5;}
+  .lead-form .fine a{color:var(--rust);border-bottom:1px solid var(--rust-dim);}
+
+  footer{background:var(--ink);color:var(--mist);padding:48px 0 28px;font-size:13px;}
+  .foot-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:22px;}
+  .foot-logo{font-family:'Teko',sans-serif;font-weight:700;font-size:24px;color:var(--paper);}
+
+  @media (max-width:860px){
+    nav{display:none;}
+    .stat-rail{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-right:none;}
+    .region-grid,.svc-grid,.dir-grid,.news-grid{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:1fr;}
+    .wrap{padding:0 20px;}
+    .hero-inner{padding:0 20px 48px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="logo">ПСКОВ<span>ВТОРМЕТ</span></div>
+    <nav>
+      <a href="#regions">Продать лом</a>
+      <a href="#services">Услуги</a>
+      <a href="#about">О компании</a>
+      <a href="#history">История</a>
+      <a href="#structure">Структура</a>
+      <a href="#contacts">Контакты</a>
+      <a href="#news">Новости</a>
+    </nav>
+    <div class="top-actions">
+      <a href="tel:+79219088877">+7 (921) 908-88-77</a>
+      <a class="btn" href="#contacts">Сдать лом</a>
+    </div>
+  </div>
+</header>
+
+<div class="hazard"></div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">АО «Псковвтормет» · с 1949 года</div>
+    <h1>Сбор, переработка<br>и продажа <em>металлолома</em></h1>
+    <p class="lede">Ведущее предприятие Северо-Западного и Центрального регионов России. 30 производственно-заготовительных участков, собственный автотранспорт и подвижной состав, прямые контракты с металлургическими заводами.</p>
+    <div class="hero-cta">
+      <a class="btn" href="#regions">Найти ближайший участок</a>
+      <a class="btn btn-ghost" href="#contacts">Оставить заявку</a>
+    </div>
+  </div>
+  <div class="stat-rail">
+    <div class="stat"><div class="num mono">1949</div><div class="lbl">Начало истории</div></div>
+    <div class="stat"><div class="num mono">30</div><div class="lbl">Участков в 7 регионах</div></div>
+    <div class="stat"><div class="num mono">500+</div><div class="lbl">Сотрудников</div></div>
+    <div class="stat"><div class="num mono">№1</div><div class="lbl">В рейтинге экспортёров РФ, 2015</div></div>
+  </div>
+</section>
+
+<section id="regions">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Продать лом</div>
+        <h2>Выберите участок<br>рядом с вами</h2>
+      </div>
+      <p>Приёмо-сдаточный акт оформляется на предъявителя паспорта. Оплата — только безналичным переводом на карту лица, указанного в акте.</p>
+    </div>
+    <div class="region-grid">
+      <a class="region-card" href="https://pskovvtormet.ru/region/spb"><span class="n mono">01</span><h3>Санкт-Петербург и область</h3><div class="sub">13 участков</div></a>
+      <a class="region-card" href="https://pskovvtormet.ru/region/msk"><span class="n mono">02</span><h3>Московская область</h3><div class="sub">5 участков</div></a>
+      <a class="region-card" href="https://pskovvtormet.ru/region/psk"><span class="n mono">03</span><h3>Псковская область</h3><div class="sub">7 участков</div></a>
+      <a class="region-card" href="https://pskovvtormet.ru/region/novgorod"><span class="n mono">04</span><h3>Новгородская область</h3><div class="sub">1 участок</div></a>
+      <a class="region-card" href="https://pskovvtormet.ru/region/bryansk"><span class="n mono">05</span><h3>Брянская область</h3><div class="sub">2 участка</div></a>
+      <a class="region-card" href="https://pskovvtormet.ru/region/smolensk"><span class="n mono">06</span><h3>Смоленская область</h3><div class="sub">1 участок</div></a>
+      <a class="region-card" href="https://pskovvtormet.ru/region/tver"><span class="n mono">07</span><h3>Тверская область</h3><div class="sub">1 участок</div></a>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="on-steel">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Услуги</div>
+        <h2>Работаем с бизнесом<br>под ключ</h2>
+      </div>
+      <p>От вывоза лома с площадки клиента до отгрузки на металлургические заводы по прямым контрактам.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card">
+        <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 16V6a1 1 0 0 1 1-1h9v11"/><path d="M13 9h4l4 4v3h-8"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg>
+        <h3>Автотранспорт</h3>
+        <p>Вывоз лома от клиента собственным автотранспортом компании.</p>
+      </div>
+      <div class="svc-card">
+        <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="9" rx="1"/><path d="M3 12h18M7 16v2M17 16v2"/><circle cx="7" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></svg>
+        <h3>Подвижной состав</h3>
+        <p>Вывоз лома собственными полувагонами по железной дороге.</p>
+      </div>
+      <div class="svc-card">
+        <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21v-6h6v6M4 12h16"/></svg>
+        <h3>Отгрузка на заводы</h3>
+        <p>Реализация чёрного и цветного лома на металлургические заводы под прямые контракты.</p>
+      </div>
+      <div class="svc-card">
+        <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v4H4zM6 8v12h12V8M10 12h4"/></svg>
+        <h3>Тендерные закупки</h3>
+        <p>Закупка чёрных и цветных видов лома через торги на электронно-торговых площадках.</p>
+      </div>
+      <div class="svc-card">
+        <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v6M9 6l3-3 3 3"/><rect x="4" y="10" width="16" height="10" rx="1"/><path d="M4 15h16"/></svg>
+        <h3>Покупка оборудования</h3>
+        <p>Аренда или покупка промышленных площадок, закупка производственного оборудования.</p>
+      </div>
+      <div class="svc-card">
+        <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+        <h3>Цветной лом на заводы</h3>
+        <p>Отдельное направление реализации лома цветных металлов на металлургические предприятия.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">О компании</div>
+        <h2>С областного<br>«Вторчермета» —<br>к лидеру отрасли</h2>
+      </div>
+      <p>АО «Псковвтормет» создано в 1993 году в Пскове на базе областного государственного предприятия «Вторчермет». Сегодня — ведущее специализированное предприятие Северо-Запада и Центра России.</p>
+    </div>
+  </div>
+</section>
+
+<section id="history" class="on-steel">
+  <div class="wrap">
+    <div class="eyebrow">История компании</div>
+    <h2 style="margin-bottom:8px;">Семь десятилетий<br>в отрасли</h2>
+  </div>
+  <div class="rail-outer">
+    <div class="wrap" style="padding:0 32px;">
+      <div class="rail">
+        <div class="rail-item">
+          <div class="rivet"></div>
+          <span class="yr">1949</span>
+          <h4>Решение ГЛАВВТОРЧЕРМЕТ</h4>
+          <p>Принято решение об открытии Псковского отделения.</p>
+        </div>
+        <div class="rail-item">
+          <div class="rivet"></div>
+          <span class="yr">1963–1979</span>
+          <h4>Первый участок в Пскове</h4>
+          <p>Объект площадью 34 375 м² с цехами прессования и газовой резки. Полноценная работа — с 1979 г., после установки пресса СПА-400.</p>
+        </div>
+        <div class="rail-item">
+          <div class="rivet"></div>
+          <span class="yr">1993–2000</span>
+          <h4>Самостоятельная компания</h4>
+          <p>Модернизация техники, начало экспорта, налаживание железнодорожной логистики закупок по регионам.</p>
+        </div>
+        <div class="rail-item">
+          <div class="rivet"></div>
+          <span class="yr">2001–2004</span>
+          <h4>Выход в Европу</h4>
+          <p>Крупнейший российский экспортёр стальной стружки в Европу. Площадки в Санкт-Петербурге, перевалка через порты Ейск и Ростов.</p>
+        </div>
+        <div class="rail-item">
+          <div class="rivet"></div>
+          <span class="yr">2005–2010</span>
+          <h4>Статус «Лучший поставщик»</h4>
+          <p>Контракты с БМЗ, «Северсталь», «ОМЗ-Спецсталь». Сотрудничество с турецкими заводами, 4-е место в РФ по экспорту в 2007 г.</p>
+        </div>
+        <div class="rail-item">
+          <div class="rivet"></div>
+          <span class="yr">2014–2024</span>
+          <h4>Экспансия и Колпино</h4>
+          <p>Площадки в Москве, Новгороде, Брянске, Смоленске, Твери. Крупнейшая площадка Колпино (135 тыс. м²) на базе Ижорских заводов, 2023.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="structure">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Структура компании</div>
+        <h2>Кто за что<br>отвечает</h2>
+      </div>
+      <p>Прямые контакты по направлениям — без лишних пересылок между отделами.</p>
+    </div>
+    <div class="dir-lead">
+      <div>
+        <div class="role">Генеральный директор</div>
+        <h3>Стечкевич Дмитрий Любомирович</h3>
+      </div>
+      <a class="mono" href="mailto:sd@pskovvtormet.ru" style="color:var(--rust-dim);font-size:13px;">sd@pskovvtormet.ru</a>
+    </div>
+    <div class="dir-grid">
+      <div class="dir-cell"><div class="dept">Помощник генерального директора</div><div class="mail">info@pskovvtormet.ru</div></div>
+      <div class="dir-cell"><div class="dept">Экономический отдел</div><div class="mail">zgde@pskovvtormet.ru</div></div>
+      <div class="dir-cell"><div class="dept">Компьютерное обеспечение</div><div class="mail">r.it@pskovvtormet.ru</div></div>
+      <div class="dir-cell"><div class="dept">Отдел маркетинга</div><div class="mail">rom@pskovvtormet.ru</div></div>
+      <div class="dir-cell"><div class="dept">Технический отдел</div><div class="mail">zgdt@pskovvtormet.ru</div></div>
+      <div class="dir-cell"><div class="dept">Отдел развития</div><div class="mail">va2@pskovvtormet.ru</div></div>
+      <div class="dir-cell"><div class="dept">Бухгалтерия</div><div class="mail">gb.buh@pskovvtormet.ru</div></div>
+      <div class="dir-cell"><div class="dept">Ж/Д транспорт и логистика</div><div class="mail">z.logist@pskovvtormet.ru</div></div>
+      <div class="dir-cell"><div class="dept">Отдел кадров</div><div class="mail">kadres@pskovvtormet.ru</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="on-ink" id="vacancy">
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:32px;">
+    <div style="max-width:520px;">
+      <div class="eyebrow">Вакансии</div>
+      <h2 style="font-size:38px;">Около 500 человек<br>в семи регионах</h2>
+      <p style="color:var(--mist);margin-top:14px;font-size:15px;">Актуальные вакансии ИТР и на производство — на hh.ru и Avito. Резюме и вопросы принимаем пн–пт, 09:00–18:00.</p>
+    </div>
+    <div>
+      <div class="mono" style="font-size:13px;color:var(--mist);margin-bottom:6px;">kadres@pskovvtormet.ru</div>
+      <div class="mono" style="font-size:13px;color:var(--mist);margin-bottom:22px;">+7 (921) 110-73-13</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a class="btn" href="https://pskov.hh.ru/search/vacancy?text=%D0%9F%D1%81%D0%BA%D0%BE%D0%B2%D0%B2%D1%82%D0%BE%D1%80%D0%BC%D0%B5%D1%82&area=75">Смотреть на hh.ru</a>
+        <a class="btn btn-ghost" href="https://www.avito.ru/brands/pskovvtormet/items/all/vakansii">Смотреть на Avito</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="documents">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Документы</div>
+        <h2>Лицензии<br>и сертификаты</h2>
+      </div>
+    </div>
+    <div class="doc-list">
+      <div class="doc-row">
+        <div class="name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/></svg>Сертификат БР</div>
+        <a class="dl" href="https://pskovvtormet.ru/media/documents/2025/06/24/SRBR.jpg">Скачать →</a>
+      </div>
+      <div class="doc-row">
+        <div class="name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/></svg>Лицензия 9МЧЦ</div>
+        <a class="dl" href="https://pskovvtormet.ru/media/documents/2025/06/18/licence1_licence2_merged.pdf">Скачать PDF →</a>
+      </div>
+      <div class="doc-row">
+        <div class="name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v5h5"/></svg>№(60)-4675-СТО/П</div>
+        <a class="dl" href="https://pskovvtormet.ru/media/documents/2025/06/18/%D0%9E%D1%82%D1%85%D0%BE%D0%B4%D1%8B-1_merged.pdf">Скачать PDF →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="news" class="on-steel">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Новости</div>
+        <h2>Что происходит<br>в компании</h2>
+      </div>
+      <a class="btn btn-ghost" href="https://pskovvtormet.ru/news/">Все новости</a>
+    </div>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="thumb"></div>
+        <div class="body">
+          <div class="date">31.12.2025</div>
+          <h4>График работы в праздничные дни</h4>
+          <p>Режим работы участков с 04.01.2026 по 11.01.2026 — просим планировать поставки заранее.</p>
+          <div class="rd">Читать далее</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="thumb"></div>
+        <div class="body">
+          <div class="date">28.12.2025</div>
+          <h4>График работы: СПб и Ленобласть</h4>
+          <p>Режим работы участков СПб и Ленинградской области с 30.12.2025 по 11.01.2026.</p>
+          <div class="rd">Читать далее</div>
+        </div>
+      </div>
+      <div class="news-card">
+        <div class="thumb"></div>
+        <div class="body">
+          <div class="date">12.08.2025</div>
+          <h4>Декларирование дохода от сдачи лома</h4>
+          <p>Напоминаем физлицам об обязанности в отдельных случаях декларировать доход и уплачивать НДФЛ.</p>
+          <div class="rd">Читать далее</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contacts">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Контакты</div>
+        <h2>Свяжитесь<br>с нами</h2>
+      </div>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <div class="contact-block">
+          <div class="k">Адрес</div>
+          <div class="v">Россия, г. Псков, 180017, ул. Советская, 118</div>
+          <div class="k">Телефон</div>
+          <div class="v mono">+7 (8112) 66-13-13</div>
+          <div class="k">Приём лома</div>
+          <div class="v mono">+7 (921) 908-88-77</div>
+          <div class="k">Телефон доверия</div>
+          <div class="v mono">+7 (921) 119-63-02</div>
+          <div class="k">Email</div>
+          <div class="v mono">info@pskovvtormet.ru</div>
+        </div>
+        <table class="req-table">
+          <tr><td>ИНН</td><td>6027007501</td></tr>
+          <tr><td>КПП</td><td>602701001</td></tr>
+          <tr><td>ОКПО</td><td>05762016</td></tr>
+          <tr><td>БИК</td><td>045805602</td></tr>
+          <tr><td>Банк</td><td>Псковское ОСБ №8630</td></tr>
+        </table>
+      </div>
+      <div class="lead-form">
+        <div class="eyebrow" style="color:var(--rust);">Оставить заявку</div>
+        <p style="color:var(--mist);font-size:14px;margin-bottom:20px;">Наш менеджер свяжется с вами в ближайшее время.</p>
+        <input type="text" placeholder="Ваше имя">
+        <input type="tel" placeholder="Телефон">
+        <input type="email" placeholder="Email">
+        <div class="fine">Отправляя форму, вы даёте согласие на обработку персональных данных в соответствии с <a href="https://pskovvtormet.ru/policy/">политикой конфиденциальности</a>.</div>
+        <a class="btn" style="width:100%;justify-content:center;">Отправить заявку</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-logo">ПСКОВВТОРМЕТ</div>
+      <div>Россия, г. Псков, 180017, ул. Советская, 118</div>
+      <div>+7 (8112) 66-13-13 · info@pskovvtormet.ru</div>
+      <a href="https://pskovvtormet.ru/policy">Политика конфиденциальности</a>
+    </div>
+    <div>© АО «Псковвтормет». Макет — концепт редизайна на основе действующего сайта.</div>
+  </div>
+</footer>
+
+</body>
+</html>
